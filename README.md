@@ -72,6 +72,118 @@ Press `prefix + I` to install.
 | `@battery_revamped_health_format` | `%s%%` | format for battery health |
 | `@battery_revamped_enable_logging` | `0` | set to `1` to log under `~/.tmux/battery-revamped-logs` |
 
+## Theme color suggestions
+
+The defaults use 16 ANSI color names that the active terminal theme remaps, so the plugin matches any theme out of the box. For exact hex values, copy one block below into your `.tmux.conf`. Each block colors the low charge tiers red, the middle tiers yellow, and the high tiers green, then colors the status states to match.
+
+### Catppuccin Mocha
+
+```tmux
+set -g @battery_revamped_charge_tier1_fg_color "#[fg=#f38ba8]"
+set -g @battery_revamped_charge_tier2_fg_color "#[fg=#f38ba8]"
+set -g @battery_revamped_charge_tier3_fg_color "#[fg=#f38ba8]"
+set -g @battery_revamped_charge_tier4_fg_color "#[fg=#f9e2af]"
+set -g @battery_revamped_charge_tier5_fg_color "#[fg=#f9e2af]"
+set -g @battery_revamped_charge_tier6_fg_color "#[fg=#f9e2af]"
+set -g @battery_revamped_charge_tier7_fg_color "#[fg=#a6e3a1]"
+set -g @battery_revamped_charge_tier8_fg_color "#[fg=#a6e3a1]"
+set -g @battery_revamped_status_charged_fg_color "#[fg=#a6e3a1]"
+set -g @battery_revamped_status_charging_fg_color "#[fg=#a6e3a1]"
+set -g @battery_revamped_status_discharging_fg_color "#[fg=#f9e2af]"
+set -g @battery_revamped_status_attached_fg_color "#[fg=#89b4fa]"
+set -g @battery_revamped_status_unknown_fg_color "#[fg=#a6adc8]"
+```
+
+### Dracula
+
+```tmux
+set -g @battery_revamped_charge_tier1_fg_color "#[fg=#ff5555]"
+set -g @battery_revamped_charge_tier2_fg_color "#[fg=#ff5555]"
+set -g @battery_revamped_charge_tier3_fg_color "#[fg=#ff5555]"
+set -g @battery_revamped_charge_tier4_fg_color "#[fg=#f1fa8c]"
+set -g @battery_revamped_charge_tier5_fg_color "#[fg=#f1fa8c]"
+set -g @battery_revamped_charge_tier6_fg_color "#[fg=#f1fa8c]"
+set -g @battery_revamped_charge_tier7_fg_color "#[fg=#50fa7b]"
+set -g @battery_revamped_charge_tier8_fg_color "#[fg=#50fa7b]"
+set -g @battery_revamped_status_charged_fg_color "#[fg=#50fa7b]"
+set -g @battery_revamped_status_charging_fg_color "#[fg=#50fa7b]"
+set -g @battery_revamped_status_discharging_fg_color "#[fg=#f1fa8c]"
+set -g @battery_revamped_status_attached_fg_color "#[fg=#bd93f9]"
+set -g @battery_revamped_status_unknown_fg_color "#[fg=#6272a4]"
+```
+
+### Nord
+
+```tmux
+set -g @battery_revamped_charge_tier1_fg_color "#[fg=#bf616a]"
+set -g @battery_revamped_charge_tier2_fg_color "#[fg=#bf616a]"
+set -g @battery_revamped_charge_tier3_fg_color "#[fg=#bf616a]"
+set -g @battery_revamped_charge_tier4_fg_color "#[fg=#ebcb8b]"
+set -g @battery_revamped_charge_tier5_fg_color "#[fg=#ebcb8b]"
+set -g @battery_revamped_charge_tier6_fg_color "#[fg=#ebcb8b]"
+set -g @battery_revamped_charge_tier7_fg_color "#[fg=#a3be8c]"
+set -g @battery_revamped_charge_tier8_fg_color "#[fg=#a3be8c]"
+set -g @battery_revamped_status_charged_fg_color "#[fg=#a3be8c]"
+set -g @battery_revamped_status_charging_fg_color "#[fg=#a3be8c]"
+set -g @battery_revamped_status_discharging_fg_color "#[fg=#ebcb8b]"
+set -g @battery_revamped_status_attached_fg_color "#[fg=#81a1c1]"
+set -g @battery_revamped_status_unknown_fg_color "#[fg=#d8dee9]"
+```
+
+### Gruvbox Dark
+
+```tmux
+set -g @battery_revamped_charge_tier1_fg_color "#[fg=#fb4934]"
+set -g @battery_revamped_charge_tier2_fg_color "#[fg=#fb4934]"
+set -g @battery_revamped_charge_tier3_fg_color "#[fg=#fb4934]"
+set -g @battery_revamped_charge_tier4_fg_color "#[fg=#fabd2f]"
+set -g @battery_revamped_charge_tier5_fg_color "#[fg=#fabd2f]"
+set -g @battery_revamped_charge_tier6_fg_color "#[fg=#fabd2f]"
+set -g @battery_revamped_charge_tier7_fg_color "#[fg=#b8bb26]"
+set -g @battery_revamped_charge_tier8_fg_color "#[fg=#b8bb26]"
+set -g @battery_revamped_status_charged_fg_color "#[fg=#b8bb26]"
+set -g @battery_revamped_status_charging_fg_color "#[fg=#b8bb26]"
+set -g @battery_revamped_status_discharging_fg_color "#[fg=#fabd2f]"
+set -g @battery_revamped_status_attached_fg_color "#[fg=#83a598]"
+set -g @battery_revamped_status_unknown_fg_color "#[fg=#a89984]"
+```
+
+### Tokyo Night
+
+```tmux
+set -g @battery_revamped_charge_tier1_fg_color "#[fg=#f7768e]"
+set -g @battery_revamped_charge_tier2_fg_color "#[fg=#f7768e]"
+set -g @battery_revamped_charge_tier3_fg_color "#[fg=#f7768e]"
+set -g @battery_revamped_charge_tier4_fg_color "#[fg=#e0af68]"
+set -g @battery_revamped_charge_tier5_fg_color "#[fg=#e0af68]"
+set -g @battery_revamped_charge_tier6_fg_color "#[fg=#e0af68]"
+set -g @battery_revamped_charge_tier7_fg_color "#[fg=#9ece6a]"
+set -g @battery_revamped_charge_tier8_fg_color "#[fg=#9ece6a]"
+set -g @battery_revamped_status_charged_fg_color "#[fg=#9ece6a]"
+set -g @battery_revamped_status_charging_fg_color "#[fg=#9ece6a]"
+set -g @battery_revamped_status_discharging_fg_color "#[fg=#e0af68]"
+set -g @battery_revamped_status_attached_fg_color "#[fg=#7aa2f7]"
+set -g @battery_revamped_status_unknown_fg_color "#[fg=#565f89]"
+```
+
+### Solarized Dark
+
+```tmux
+set -g @battery_revamped_charge_tier1_fg_color "#[fg=#dc322f]"
+set -g @battery_revamped_charge_tier2_fg_color "#[fg=#dc322f]"
+set -g @battery_revamped_charge_tier3_fg_color "#[fg=#dc322f]"
+set -g @battery_revamped_charge_tier4_fg_color "#[fg=#b58900]"
+set -g @battery_revamped_charge_tier5_fg_color "#[fg=#b58900]"
+set -g @battery_revamped_charge_tier6_fg_color "#[fg=#b58900]"
+set -g @battery_revamped_charge_tier7_fg_color "#[fg=#859900]"
+set -g @battery_revamped_charge_tier8_fg_color "#[fg=#859900]"
+set -g @battery_revamped_status_charged_fg_color "#[fg=#859900]"
+set -g @battery_revamped_status_charging_fg_color "#[fg=#859900]"
+set -g @battery_revamped_status_discharging_fg_color "#[fg=#b58900]"
+set -g @battery_revamped_status_attached_fg_color "#[fg=#268bd2]"
+set -g @battery_revamped_status_unknown_fg_color "#[fg=#586e75]"
+```
+
 ## Support by platform and architecture
 
 The macOS path uses built-in tools and works the same on Intel and Apple Silicon.

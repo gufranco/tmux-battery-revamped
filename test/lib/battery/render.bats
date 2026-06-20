@@ -100,3 +100,53 @@ teardown() {
   [[ -z "$(battery_render_health "")" ]]
   [[ "$(battery_render_health 96)" == "96%" ]]
 }
+
+@test "render.sh - battery_charge_color passes a named color through verbatim" {
+  set_tmux_option "@battery_revamped_charge_tier8_fg_color" "#[fg=red]"
+  [[ "$(battery_charge_color 100 fg)" == "#[fg=red]" ]]
+}
+
+@test "render.sh - battery_charge_color passes a 256 color through verbatim" {
+  set_tmux_option "@battery_revamped_charge_tier8_fg_color" "#[fg=colour203]"
+  [[ "$(battery_charge_color 100 fg)" == "#[fg=colour203]" ]]
+}
+
+@test "render.sh - battery_charge_color passes a hex color through verbatim" {
+  set_tmux_option "@battery_revamped_charge_tier8_fg_color" "#[fg=#f38ba8]"
+  [[ "$(battery_charge_color 100 fg)" == "#[fg=#f38ba8]" ]]
+}
+
+@test "render.sh - battery_charge_color passes a hex fg and bg pair through verbatim" {
+  set_tmux_option "@battery_revamped_charge_tier8_fg_color" "#[fg=#f38ba8,bg=#1e1e2e]"
+  [[ "$(battery_charge_color 100 fg)" == "#[fg=#f38ba8,bg=#1e1e2e]" ]]
+}
+
+@test "render.sh - battery_charge_color passes a bright color through verbatim" {
+  set_tmux_option "@battery_revamped_charge_tier8_fg_color" "#[fg=brightred]"
+  [[ "$(battery_charge_color 100 fg)" == "#[fg=brightred]" ]]
+}
+
+@test "render.sh - battery_status_color passes a named color through verbatim" {
+  set_tmux_option "@battery_revamped_status_charging_fg_color" "#[fg=red]"
+  [[ "$(battery_status_color charging fg)" == "#[fg=red]" ]]
+}
+
+@test "render.sh - battery_status_color passes a 256 color through verbatim" {
+  set_tmux_option "@battery_revamped_status_charging_fg_color" "#[fg=colour203]"
+  [[ "$(battery_status_color charging fg)" == "#[fg=colour203]" ]]
+}
+
+@test "render.sh - battery_status_color passes a hex color through verbatim" {
+  set_tmux_option "@battery_revamped_status_charging_fg_color" "#[fg=#f38ba8]"
+  [[ "$(battery_status_color charging fg)" == "#[fg=#f38ba8]" ]]
+}
+
+@test "render.sh - battery_status_color passes a hex fg and bg pair through verbatim" {
+  set_tmux_option "@battery_revamped_status_charging_fg_color" "#[fg=#f38ba8,bg=#1e1e2e]"
+  [[ "$(battery_status_color charging fg)" == "#[fg=#f38ba8,bg=#1e1e2e]" ]]
+}
+
+@test "render.sh - battery_status_color passes a bright color through verbatim" {
+  set_tmux_option "@battery_revamped_status_charging_fg_color" "#[fg=brightred]"
+  [[ "$(battery_status_color charging fg)" == "#[fg=brightred]" ]]
+}
