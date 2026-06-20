@@ -1,17 +1,29 @@
-# tmux-battery-revamped
+<div align="center">
+
+<h1>tmux-battery-revamped</h1>
+
+**Battery status for your tmux status bar, without ever blocking the status render.**
 
 [![Tests](https://github.com/gufranco/tmux-battery-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/gufranco/tmux-battery-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Battery status for your tmux status bar, without ever blocking the status render.
+</div>
 
-Battery probes like `pmset` and `upower` are slow enough to stutter a status bar
-that queries them inline, and the classic approach fans out a dozen of them per
-refresh. This plugin queries once in a detached background worker, caches the
-result in tmux server user-options, and serves every placeholder from that cache.
-No temp files are used.
+**15** placeholders · **2** platforms · **104** tests · **95%+** coverage
 
-Inspired by [tmux-battery](https://github.com/tmux-plugins/tmux-battery). Built
-from [tmux-plugin-template](https://github.com/gufranco/tmux-plugin-template).
+Battery probes like `pmset` and `upower` are slow enough to stutter a status bar that queries them inline, and the classic approach fans out a dozen of them per refresh. This plugin queries once in a detached background worker, caches the result in tmux server user-options, and serves every placeholder from that cache. No temp files are used.
+
+Inspired by [tmux-battery](https://github.com/tmux-plugins/tmux-battery). Built from [tmux-plugin-template](https://github.com/gufranco/tmux-plugin-template).
+
+<table>
+<tr>
+<td><b>Non-blocking</b><br/>One detached background worker does the probing, so the status render never waits on slow battery tools.</td>
+<td><b>No temp files</b><br/>Readings live in tmux server user-options, with nothing written to disk.</td>
+</tr>
+<tr>
+<td><b>Cross-platform</b><br/>Works on Linux and macOS, across Intel and Apple Silicon.</td>
+<td><b>Tested</b><br/>104 tests hold the behavior at 95%+ coverage.</td>
+</tr>
+</table>
 
 ## Placeholders
 
@@ -71,9 +83,15 @@ The macOS path uses built-in tools and works the same on Intel and Apple Silicon
 | Charging or discharging watts | yes, `power_now` | yes, `system_profiler` |
 | Cycle count and health | yes, `/sys` | yes, `ioreg` (works on Apple Silicon) |
 
-On Linux, percentage and status work through `/sys` with no extra package;
-remaining time needs `acpi` installed. Cycle count and health read from `ioreg`
-on macOS, which works on Apple Silicon, and from `/sys` on Linux.
+On Linux, percentage and status work through `/sys` with no extra package; remaining time needs `acpi` installed. Cycle count and health read from `ioreg` on macOS, which works on Apple Silicon, and from `/sys` on Linux.
+
+## Development
+
+```sh
+make test
+make lint
+make coverage
+```
 
 ## License
 
