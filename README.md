@@ -1,5 +1,7 @@
 # tmux-battery-revamped
 
+[![Tests](https://github.com/gufranco/tmux-battery-revamped/actions/workflows/tests.yml/badge.svg)](https://github.com/gufranco/tmux-battery-revamped/actions/workflows/tests.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Battery status for your tmux status bar, without ever blocking the status render.
 
 Battery probes like `pmset` and `upower` are slow enough to stutter a status bar
@@ -54,13 +56,18 @@ Press `prefix + I` to install.
 | `@battery_revamped_watts_format` | `%sW` | format for charging watts |
 | `@battery_revamped_enable_logging` | `0` | set to `1` to log under `~/.tmux/battery-revamped-logs` |
 
-## Platform support
+## Support by platform and architecture
 
-| Field | macOS | Linux |
-|-------|-------|-------|
-| Percentage and status | `pmset` | `/sys/class/power_supply`, then `acpi` |
-| Remaining time | `pmset` | `acpi` |
-| Charging watts | `system_profiler` | not available |
+The macOS path uses built-in tools and works the same on Intel and Apple Silicon.
+
+| Field | Linux (x86_64 and arm64) | macOS (Intel and Apple Silicon) |
+|-------|--------------------------|----------------------------------|
+| Percentage and status | yes, `/sys/class/power_supply` then `acpi` | yes, `pmset` |
+| Remaining time | yes, with `acpi` installed | yes, `pmset` |
+| Charging watts | no | yes, `system_profiler` |
+
+On Linux, percentage and status work through `/sys` with no extra package;
+remaining time needs `acpi` installed. Charging watts is macOS only.
 
 ## License
 
