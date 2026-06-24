@@ -19,7 +19,9 @@ battery_norm_status() {
   local s
   s=$(printf '%s' "${1}" | tr '[:upper:]' '[:lower:]')
   case "${s}" in
-    *"not charging"*) echo "attached" ;;
+    *"not charging"*)      echo "attached" ;;
+    *"pending-charge"*|*"pending charge"*)       echo "attached" ;;
+    *"pending-discharge"*|*"pending discharge"*) echo "attached" ;;
     *discharging*)    echo "discharging" ;;
     *charging*)       echo "charging" ;;
     *charged*|*full*) echo "charged" ;;
@@ -43,6 +45,27 @@ battery_status_from_pmset() {
 # battery_remain_from_pmset TEXT -> "H:MM" remaining, empty when not estimated.
 battery_remain_from_pmset() {
   printf '%s\n' "${1}" | grep -oE '[0-9]+:[0-9]+' | head -1
+}
+
+# battery_remain_from_sysfs NOW FULL RATE STATUS -> "H:MM" remaining computed
+# from the power-supply energy/charge counters. Empty when the rate is zero or
+# the status is neither charging nor discharging. NOW and RATE must share units
+# (energy_now with power_now, or charge_now with current_now).
+battery_remain_from_sysfs() {
+  local now="${1}" full="${2}" rate="${3}" status="${4}"
+  [[ "${now}" =~ ^[0-9]+$ && "${rate}" =~ ^[0-9]+$ ]] || { echo ""; return 0; }
+  (( rate > 0 )) || { echo ""; return 0; }
+  local num
+  case "${status}" in
+    discharging) num="${now}" ;;
+    charging)
+      [[ "${full}" =~ ^[0-9]+$ ]] && (( full > now )) || { echo ""; return 0; }
+      num=$(( full - now )) ;;
+    *) echo ""; return 0 ;;
+  esac
+  awk -v n="${num}" -v r="${rate}" \
+    'BEGIN { h = n / r; H = int(h); M = int((h - H) * 60 + 0.5); \
+      if (M == 60) { H++; M = 0 } printf "%d:%02d", H, M }'
 }
 
 # battery_watts_from_profiler TEXT -> charging watts integer, empty when absent.
@@ -83,6 +106,19 @@ _read_bat_charge_full() { _read_bat_sys charge_full; }
 _read_bat_charge_full_design() { _read_bat_sys charge_full_design; }
 _read_bat_power_now() { _read_bat_sys power_now; }
 
+# Energy and charge counters share a unit family: energy_* pairs with power_now,
+# charge_* pairs with current_now. Each reader prefers energy, then charge, so
+# the remaining-time numerator and rate stay in matching units.
+_read_bat_energy_now() {
+  local v; v=$(_read_bat_sys energy_now); [[ -n "${v}" ]] || v=$(_read_bat_sys charge_now); echo "${v}"
+}
+_read_bat_energy_full() {
+  local v; v=$(_read_bat_sys energy_full); [[ -n "${v}" ]] || v=$(_read_bat_sys charge_full); echo "${v}"
+}
+_read_bat_rate() {
+  local v; v=$(_read_bat_sys power_now); [[ -n "${v}" ]] || v=$(_read_bat_sys current_now); echo "${v}"
+}
+
 read_battery_percentage() {
   if is_macos; then
     battery_pct_from_pmset "$(_read_pmset)"
@@ -110,8 +146,16 @@ read_battery_status() {
 read_battery_remain() {
   if is_macos; then
     battery_remain_from_pmset "$(_read_pmset)"
-  elif has_command acpi; then
-    printf '%s\n' "$(_read_acpi)" | grep -oE '[0-9]+:[0-9]+' | head -1
+    return 0
+  fi
+  if has_command acpi; then
+    local t
+    t=$(printf '%s\n' "$(_read_acpi)" | grep -oE '[0-9]+:[0-9]+' | head -1)
+    [[ -n "${t}" ]] && { echo "${t}"; return 0; }
+  fi
+  if _sys_battery_present; then
+    battery_remain_from_sysfs "$(_read_bat_energy_now)" "$(_read_bat_energy_full)" \
+      "$(_read_bat_rate)" "$(read_battery_status)"
   fi
 }
 
@@ -153,6 +197,7 @@ export -f battery_norm_status
 export -f battery_pct_from_pmset
 export -f battery_status_from_pmset
 export -f battery_remain_from_pmset
+export -f battery_remain_from_sysfs
 export -f battery_watts_from_profiler
 export -f _read_pmset
 export -f _read_sys_capacity
@@ -166,6 +211,9 @@ export -f _read_bat_cycle_count
 export -f _read_bat_charge_full
 export -f _read_bat_charge_full_design
 export -f _read_bat_power_now
+export -f _read_bat_energy_now
+export -f _read_bat_energy_full
+export -f _read_bat_rate
 export -f read_battery_percentage
 export -f read_battery_status
 export -f read_battery_remain

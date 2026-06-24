@@ -20,6 +20,8 @@ teardown() {
   [[ "$(battery_norm_status 'Charged')" == "charged" ]]
   [[ "$(battery_norm_status 'Full')" == "charged" ]]
   [[ "$(battery_norm_status 'Not charging')" == "attached" ]]
+  [[ "$(battery_norm_status 'pending-charge')" == "attached" ]]
+  [[ "$(battery_norm_status 'pending-discharge')" == "attached" ]]
   [[ "$(battery_norm_status 'weird')" == "unknown" ]]
 }
 
@@ -101,6 +103,37 @@ teardown() {
   [[ "$(read_battery_remain)" == "03:00" ]]
 }
 
+@test "battery.sh - battery_remain_from_sysfs discharging time" {
+  [[ "$(battery_remain_from_sysfs 30000000 60000000 12000000 discharging)" == "2:30" ]]
+}
+
+@test "battery.sh - battery_remain_from_sysfs charging time" {
+  [[ "$(battery_remain_from_sysfs 30000000 60000000 12000000 charging)" == "2:30" ]]
+}
+
+@test "battery.sh - battery_remain_from_sysfs is empty at zero rate" {
+  [[ -z "$(battery_remain_from_sysfs 30000000 60000000 0 discharging)" ]]
+}
+
+@test "battery.sh - battery_remain_from_sysfs is empty when fully charged" {
+  [[ -z "$(battery_remain_from_sysfs 60000000 60000000 12000000 charged)" ]]
+}
+
+@test "battery.sh - battery_remain_from_sysfs is empty on junk input" {
+  [[ -z "$(battery_remain_from_sysfs abc 60000000 12000000 discharging)" ]]
+}
+
+@test "battery.sh - read_battery_remain computes from sysfs when acpi is absent" {
+  _PLATFORM_OS_CACHE="Linux"
+  has_command() { return 1; }
+  _sys_battery_present() { return 0; }
+  _read_bat_energy_now() { echo "30000000"; }
+  _read_bat_energy_full() { echo "60000000"; }
+  _read_bat_rate() { echo "12000000"; }
+  read_battery_status() { echo "discharging"; }
+  [[ "$(read_battery_remain)" == "2:30" ]]
+}
+
 @test "battery.sh - read_battery_watts uses system_profiler on macOS" {
   _PLATFORM_OS_CACHE="Darwin"
   _read_profiler() { echo "Wattage (W): 60"; }
@@ -132,6 +165,34 @@ teardown() {
 
 @test "battery.sh - _read_bat_sys reads BAT0 or BAT1 absence safely" {
   [[ -z "$(_read_bat_sys nonexistent_field_xyz)" ]]
+}
+
+@test "battery.sh - energy readers prefer energy over charge counters" {
+  _read_bat_sys() {
+    case "$1" in
+      energy_now)  echo "30000000" ;;
+      energy_full) echo "60000000" ;;
+      power_now)   echo "12000000" ;;
+      *)           echo "" ;;
+    esac
+  }
+  [[ "$(_read_bat_energy_now)" == "30000000" ]]
+  [[ "$(_read_bat_energy_full)" == "60000000" ]]
+  [[ "$(_read_bat_rate)" == "12000000" ]]
+}
+
+@test "battery.sh - energy readers fall back to charge counters" {
+  _read_bat_sys() {
+    case "$1" in
+      charge_now)  echo "1500000" ;;
+      charge_full) echo "3000000" ;;
+      current_now) echo "600000" ;;
+      *)           echo "" ;;
+    esac
+  }
+  [[ "$(_read_bat_energy_now)" == "1500000" ]]
+  [[ "$(_read_bat_energy_full)" == "3000000" ]]
+  [[ "$(_read_bat_rate)" == "600000" ]]
 }
 
 @test "battery.sh - read_battery_cycles reads ioreg on macOS" {
